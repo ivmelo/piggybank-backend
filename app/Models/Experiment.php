@@ -24,4 +24,28 @@ class Experiment extends Model
     {
         return $this->hasMany(Field::class)->orderBy('order');
     }
+
+    /**
+     * The participants of the experiment.
+     */
+    public function participants()
+    {
+        return $this->hasMany(Participant::class);
+    }
+
+    /**
+     * The author of this experiment.
+     */
+    public function author()
+    {
+        return $this->belongsTo(User::class, 'created_by');
+    }
+
+    /**
+     * The last person who edited this experiment.
+     */
+    public function editor()
+    {
+        return $this->belongsTo(User::class, 'updated_by');
+    }
 }

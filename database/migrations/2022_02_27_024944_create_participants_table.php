@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('birthdate');
             $table->string('token');
             $table->enum('version', ['m1', 'm2']);
+            $table->text('notes');
             $table->foreignId('created_by')->constrained('users');
             $table->foreignId('updated_by')->constrained('users');
             $table->timestamps();

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Experiment;
 use App\Models\Participant;
 use Illuminate\Http\Request;
 
@@ -22,9 +23,14 @@ class ParticipantController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create($experiment_id)
     {
-        //
+        $experiment = Experiment::findOrFail($experiment_id);
+
+        return view('participants.create', [
+            'experiment' => $experiment,
+            'versions' => ['m1' => 'M1', 'm2' => 'M2']
+        ]);
     }
 
     /**
@@ -33,9 +39,23 @@ class ParticipantController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request, $experiment_id)
     {
-        //
+        $experiment = Experiment::with('fields')->findOrFail($experiment_id);
+
+        $validated = $request->validate([
+            'code' => 'required|string|unique:participants|min:7|max:8',
+            'birthdate' => 'required|string|size:8',
+            'version' => 'required|in:m1,m2',
+        ]);
+        
+        $participant = new Participant($validated);
+        $participant->generateToken();
+        $experiment->participants()->save($participant);
+
+        session()->flash('success', 'Your participant has been added.');
+
+        return redirect()->route('experiments.show', $experiment->id);
     }
 
     /**

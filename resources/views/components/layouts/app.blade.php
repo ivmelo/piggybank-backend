@@ -50,23 +50,17 @@
             }
 
             $(function() {
-                // $( "#sortable" ).sortable();
-
                 $('#sortable').sortable({
                     stop: function(event, ui) {
-                        var fieldIdsInOrder = $('#sortable').sortable('toArray', {
-                            
-                            attribute: 'data-id'
-                        });
+                        var fieldIdsInOrder = $('#sortable').sortable('toArray', {attribute: 'data-id'});
+                        console.log(fieldIdsInOrder);
 
-                        $.post("fields/sort", {
+                        $.post('fields/sort', {
                             field_ids: fieldIdsInOrder,
                             _token: '{{ csrf_token() }}'
-                        }).done(function( data ) {
-                            alert( "Data Loaded: " + data );
+                        }).done(function(data) {
+                            console.log(data);
                         });
-
-                        console.log(fieldIdsInOrder);
                     }
                 });
             });

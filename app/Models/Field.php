@@ -26,7 +26,7 @@ class Field extends Model
     }
 
     /**
-     * The experiment this field belongs to.
+     * The author of this field.
      */
     public function author()
     {
@@ -34,7 +34,7 @@ class Field extends Model
     }
 
     /**
-     * The experiment this field belongs to.
+     * The last person who edited this field.
      */
     public function editor()
     {

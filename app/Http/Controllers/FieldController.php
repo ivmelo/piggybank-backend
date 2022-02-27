@@ -96,8 +96,16 @@ class FieldController extends Controller
     public function destroy($experiment_id, $field_id)
     {
         $field = Field::findOrFail($field_id);
-        $experiment = Experiment::findOrFail($experiment_id);
         $field->delete();
+        
+        $experiment = Experiment::findOrFail($experiment_id);
+        
+        $order = 0;
+
+        foreach($experiment->fields as $field) {
+            $field->order = $order++;
+            $field->save();
+        }
 
         session()->flash('success', 'Your field has been deleted.');
         return redirect()->route('experiments.edit', $experiment->id);

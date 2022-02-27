@@ -27,6 +27,7 @@ class ExperimentController extends Controller
     public function create()
     {
         //
+        return view('experiments.create');
     }
 
     /**
@@ -37,7 +38,17 @@ class ExperimentController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'name' => 'required|min:2|max:255',
+        ]);
+
+        $experiment = new Experiment($validated);
+
+        $experiment->save();
+
+        session()->flash('success', 'Your experiment has been saved.');
+
+        return redirect()->route('experiments.edit', $experiment->id);
     }
 
     /**
@@ -80,7 +91,17 @@ class ExperimentController extends Controller
      */
     public function update(Request $request, Experiment $experiment)
     {
-        //
+        $validated = $request->validate([
+            'name' => 'required|min:2|max:255',
+        ]);
+
+        $experiment->name = $validated['name'];
+
+        $experiment->save();
+
+        session()->flash('success', 'Your experiment has been saved.');
+
+        return redirect()->route('experiments.edit', $experiment->id);
     }
 
     /**

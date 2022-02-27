@@ -6,6 +6,21 @@
 
         <h2>Name</h2>
 
+        <form action="{{ route('experiments.update', $experiment->id) }}" method="POST">
+            <div class="mb-3">
+                @method('put')
+                @csrf
+                <label for="name" class="form-label">Name</label>
+                <input class="form-control @error('name') is-invalid @enderror" type="name" name="name" id="name" placeholder="Experiment name" value="{{ old('name', $experiment->name) }}">
+                @error('name')
+                    <div id="validation-name-error" class="invalid-feedback">
+                        {{ $message }}
+                    </div>
+                @enderror
+            </div>
+            <button class="btn btn-primary" type="submit">Save</button>
+        </form>
+
         <hr>
 
         <h2>Fields</h2>
@@ -36,8 +51,8 @@
                                 <td>{{ $field->type }}</td>
                                 <td>{{ $field->author->name }}</td>
                                 <td>{{ $field->editor->name }}</td>
-                                <td>{{ $field->created_at }}</td>
-                                <td>{{ $field->updated_at }}</td>
+                                <td>{{ $field->created_at->format(config('app.dtdisplayformat')) }}</td>
+                                <td>{{ $field->updated_at->format(config('app.dtdisplayformat')) }}</td>
                                 <td>
                                     <form action="{{ route('experiments.fields.destroy', [$experiment->id, $field->id]) }}" method="POST">
                                         @csrf
