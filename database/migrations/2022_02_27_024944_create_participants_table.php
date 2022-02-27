@@ -15,12 +15,12 @@ return new class extends Migration
     {
         Schema::create('participants', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('experiment_id')->constrained('users');
+            $table->foreignId('experiment_id')->constrained('experiments');
             $table->string('code');
             $table->string('birthdate');
             $table->string('token');
             $table->enum('version', ['m1', 'm2']);
-            $table->text('notes');
+            $table->text('notes')->nullable();
             $table->foreignId('created_by')->constrained('users');
             $table->foreignId('updated_by')->constrained('users');
             $table->timestamps();

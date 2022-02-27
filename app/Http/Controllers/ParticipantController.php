@@ -64,9 +64,11 @@ class ParticipantController extends Controller
      * @param  \App\Models\Participant  $participant
      * @return \Illuminate\Http\Response
      */
-    public function show(Participant $participant)
+    public function show($participant_id)
     {
-        //
+        return view('participants.show', [
+            'participant' => Participant::findOrFail($participant_id)
+        ]);
     }
 
     /**

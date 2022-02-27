@@ -34,6 +34,14 @@ class Field extends Model
     }
 
     /**
+     * The responses that this field has received.
+     */
+    public function responses()
+    {
+        return $this->hasMany(Response::class);
+    }
+
+    /**
      * The last person who edited this field.
      */
     public function editor()

@@ -42,9 +42,19 @@ class Participant extends Model
     }
 
     /**
+     * The responses that this participant has submitted.
+     */
+    public function responses()
+    {
+        return $this->hasMany(Response::class);
+    }
+
+    /**
      * Generates a token to be used when calling the API.
      */
     public function generateToken() {
         $this->token = md5(time() . $this->participant_code);
     }
+
+
 }

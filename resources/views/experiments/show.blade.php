@@ -24,19 +24,29 @@
                     <th scope="col">Updated By</th>
                     <th scope="col">Created At</th>
                     <th scope="col">Updated At</th>
+                    <th scope="col">Status</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach ($experiment->participants as $participant)
                     <tr>
                         <td>{{ $participant->id }}</td>
-                        <td>{{ $participant->code }}</td>
+                        <td><a href="{{ route('participants.show', $participant->id) }}">{{ $participant->code }}</a></td>
                         <td>{{ $participant->birthdate }}</td>
                         <td>{{ $participant->version }}</td>
                         <td>{{ $participant->author->name }}</td>
                         <td>{{ $participant->editor->name }}</td>
                         <td>{{ $participant->created_at->format(config('app.dtdisplayformat')) }}</td>
                         <td>{{ $participant->updated_at->format(config('app.dtdisplayformat')) }}</td>
+                        <td>
+                            @if ($participant->responses->count() === 0)
+                            <span class="badge bg-secondary">Not Started</span> 
+                            @elseif($participant->responses->count() >= $experiment->fields->count())
+                            <span class="badge bg-success">Completed</span>
+                            @else
+                            <span class="badge bg-primary">In Progress</span>
+                            @endif
+                        </td>
                     </tr>
                 @endforeach
             </tbody>
