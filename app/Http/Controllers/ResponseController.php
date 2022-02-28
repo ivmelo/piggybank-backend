@@ -82,4 +82,30 @@ class ResponseController extends Controller
     {
         //
     }
+
+    /**
+     * Updates an experiment with data coming from the client (construct).
+     * 
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function updateExperiment(Request $request) {
+        $validated = $request->validate([
+            'token' => 'required|string',
+        ]);
+
+        $experiment = Experiment::where('token', $request->get('token'))->firstOrFail();
+
+        foreach ($request->except('token') as $key => $value) {
+            $experiment->{$key} = $value;
+        }
+
+        $experiment->save();
+
+        return([
+            'status' => 'success',
+            'message' => 'Experiment updated.'
+        ]);      
+    }
+
 }

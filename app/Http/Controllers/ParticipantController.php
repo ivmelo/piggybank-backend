@@ -7,6 +7,7 @@ use App\Models\Participant;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Gate;
+use App\Models\Response;
 
 class ParticipantController extends Controller
 {
@@ -159,5 +160,43 @@ class ParticipantController extends Controller
 
         session()->flash('success', 'This participant cannot be deleted.');
         return redirect()->back();
+    }
+
+    /**
+     * Authenticates the participant and returns a token to be used in subsequent requests from construct.
+     * Also returns the name of the last field submitted by the user.
+     * 
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function authenticateExperiment(Request $request)
+    {
+        $validated = $request->validate([
+            'code' => 'required|string|min:7|max:8',
+            'birthdate' => 'required|string|size:8',
+        ]);
+
+        $participant = Participant::where('code', $validated['code'])
+            ->where('birthdate', $validated['birthdate'])
+            ->firstOrFail();
+
+        $last_response = null;
+
+        if ($participant->responses->count() > 0) {
+            $lastResponse = Response::with('field')
+                ->where('participant_id', $participant->id)
+                ->orderBy('created_at', 'desc')
+                ->first();
+
+            $last_response = $lastResponse->field->name;
+        }
+
+        return response([
+            'status' => 'success',
+            'token' => $participant->token,
+            'version' => $participant->experiment_version,
+            'last_response' => $last_response,
+            'total_responses' => $participant->responses->count()
+        ]);
     }
 }
