@@ -13,9 +13,16 @@ class FieldController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index($experiment_id)
     {
-        //
+        return view('fields.index', [
+            'experiment' => Experiment::findOrFail($experiment_id),
+            'types' => [
+                'int' => 'Integer',
+                'string' => 'String',
+                'bool' => 'Boolean'
+            ]
+        ]);
     }
 
     /**
@@ -50,7 +57,7 @@ class FieldController extends Controller
 
         session()->flash('success', 'Your field has been saved.');
 
-        return redirect()->route('experiments.edit', $experiment->id);
+        return redirect()->route('experiments.fields.index', $experiment->id);
     }
 
     /**

@@ -26,6 +26,14 @@ class Participant extends Model
     }
 
     /**
+     * The host of this participant.
+     */
+    public function host()
+    {
+        return $this->belongsTo(User::class, 'host_id');
+    }
+
+    /**
      * The author of this participant.
      */
     public function author()

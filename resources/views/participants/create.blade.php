@@ -1,5 +1,11 @@
 <x-layouts.app>
-    <div class="container container-form">
+    <div class="container">
+        @include('partials.experiment-tabs')
+
+        <div>
+            <h3 class="mt-4 mb-4">Participants</h3>
+        </div>
+
         <div class="card">
             <h5 class="card-header">Add a Participant</h5>
             <div class="card-body">
@@ -44,6 +50,23 @@
                     </div>
 
                     <div class="mb-3">
+                        <label for="host_id" class="form-label">Host</label>
+                        <select class="form-select @error('host_id') is-invalid @enderror" aria-label="Host"
+                            name="host_id" id="host_id">
+                            @foreach ($hosts as $key => $host)
+                                <option value="{{ $key }}"
+                                    @if (old('host_id') == $key) selected @endif>{{ $host }}
+                                </option>
+                            @endforeach
+                        </select>
+                        @error('host_id')
+                            <div id="validation-host_id" class="invalid-feedback">
+                                {{ $message }}
+                            </div>
+                        @enderror
+                    </div>
+
+                    <div class="mb-3">
                         @csrf
                         <label for="notes" class="form-label">Notes</label>
                         <textarea class="form-control @error('notes') is-invalid @enderror" type="notes" name="notes" id="notes" placeholder="Participant notes..." rows="2">{{ old('notes') }}</textarea>
@@ -56,7 +79,7 @@
 
                     <div class="row">
                         <div class="col d-grid mx-auto">
-                            <a href="{{ route('experiments.show', $experiment->id) }}" class="btn btn-danger">Go back</a>
+                            <a href="{{ route('experiments.show', $experiment->id) }}" class="btn btn-secondary">Go back</a>
                         </div>
                         <div class="col d-grid mx-auto">
                             <button type="submit" class="btn btn-primary">Submit</button>
@@ -64,6 +87,6 @@
                     </div>
                 </form>
             </div>
-          </div>
+        </div>
     </div>
 </x-layouts.app>

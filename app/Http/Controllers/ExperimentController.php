@@ -114,4 +114,17 @@ class ExperimentController extends Controller
     {
         //
     }
+
+    /**
+     * Shows the view for downloading the CSV file with participant responses.
+     *
+     * @param  \App\Models\Experiment  $experiment
+     * @return \Illuminate\Http\Response
+     */
+    public function downloadCsv($experiment_id)
+    {
+        return view('experiments.download-csv', [
+            'experiment' => Experiment::findOrFail($experiment_id)
+        ]);
+    }
 }

@@ -18,6 +18,8 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::resource('experiments', ExperimentController::class)->middleware(['auth']);
+Route::get('experiments/{experiment_id}/fields', [FieldController::class, 'index'])->middleware(['auth'])->name('experiments.fields.index');
+Route::get('experiments/{experiment_id}/download-csv', [ExperimentController::class, 'downloadCsv'])->middleware(['auth'])->name('experiments.download-csv');
 Route::post('experiments/{experiment_id}/fields', [FieldController::class, 'store'])->middleware(['auth'])->name('experiments.fields.store');
 Route::delete('experiments/{experiment_id}/fields/{field_id}', [FieldController::class, 'destroy'])->middleware(['auth'])->name('experiments.fields.destroy');
 Route::post('experiments/{experiment_id}/fields/sort', [FieldController::class, 'sort'])->middleware(['auth'])->name('fields.sort');

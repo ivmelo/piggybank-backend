@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Experiment;
 use App\Models\Participant;
 use Illuminate\Http\Request;
+use App\Models\User;
 
 class ParticipantController extends Controller
 {
@@ -26,10 +27,12 @@ class ParticipantController extends Controller
     public function create($experiment_id)
     {
         $experiment = Experiment::findOrFail($experiment_id);
+        $hosts = User::all()->pluck('name', 'id');
 
         return view('participants.create', [
             'experiment' => $experiment,
-            'versions' => ['m1' => 'M1', 'm2' => 'M2']
+            'versions' => ['m1' => 'M1', 'm2' => 'M2'],
+            'hosts' => $hosts
         ]);
     }
 
@@ -47,10 +50,14 @@ class ParticipantController extends Controller
             'code' => 'required|string|unique:participants|min:7|max:8',
             'birthdate' => 'required|string|size:8',
             'version' => 'required|in:m1,m2',
+            'host_id' => 'required|exists:users,id'
         ]);
+
+        $host = User::findOrFail($validated['host_id']);
         
         $participant = new Participant($validated);
         $participant->generateToken();
+        $participant->host()->associate($host);
         $experiment->participants()->save($participant);
 
         session()->flash('success', 'Your participant has been added.');
@@ -66,8 +73,11 @@ class ParticipantController extends Controller
      */
     public function show($participant_id)
     {
+        $participant = Participant::with('experiment')->findOrFail($participant_id);
+
         return view('participants.show', [
-            'participant' => Participant::findOrFail($participant_id)
+            'participant' => $participant,
+            'experiment' => $participant->experiment
         ]);
     }
 

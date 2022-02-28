@@ -1,7 +1,7 @@
 <x-layouts.app>
     <div class="container container-form">
         <div class="card">
-            <h5 class="card-header">Create Experiment</h5>
+            <h5 class="card-header">Add Experiment</h5>
             <div class="card-body">
                 <form action="{{ route('experiments.store') }}" method="POST">
                     <div class="mb-3">

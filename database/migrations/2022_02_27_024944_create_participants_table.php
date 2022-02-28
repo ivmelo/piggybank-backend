@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('token');
             $table->enum('version', ['m1', 'm2']);
             $table->text('notes')->nullable();
+            $table->foreignId('host_id')->constrained('users');
             $table->foreignId('created_by')->constrained('users');
             $table->foreignId('updated_by')->constrained('users');
             $table->timestamps();
