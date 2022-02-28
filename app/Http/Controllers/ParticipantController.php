@@ -194,7 +194,7 @@ class ParticipantController extends Controller
         return response([
             'status' => 'success',
             'token' => $participant->token,
-            'version' => $participant->experiment_version,
+            'version' => $participant->version,
             'last_response' => $last_response,
             'total_responses' => $participant->responses->count()
         ]);

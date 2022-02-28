@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ParticipantController;
+use App\Http\Controllers\ResponseController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -16,7 +17,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::post('/participants/authenticate', [ParticipantController::class, 'authenticateExperiment'])->name('participants.authenticate');
-// Route::post('/experiments/update-experiment', [ExperimentController::class, 'updateExperiment'])->name('experiments.update');
+Route::post('/responses', [ResponseController::class, 'store'])->name('responses.store');
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
