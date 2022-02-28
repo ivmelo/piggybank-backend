@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Experiment;
 use App\Models\Field;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 class FieldController extends Controller
 {
@@ -43,6 +44,10 @@ class FieldController extends Controller
      */
     public function store(Request $request, $experiment_id)
     {
+        if (! Gate::allows('update-field')) {
+            abort(403);
+        }
+
         $experiment = Experiment::with('fields')->findOrFail($experiment_id);
 
         $validated = $request->validate([
@@ -102,6 +107,10 @@ class FieldController extends Controller
      */
     public function destroy($experiment_id, $field_id)
     {
+        if (! Gate::allows('update-field')) {
+            abort(403);
+        }
+
         $field = Field::findOrFail($field_id);
         $field->delete();
         
@@ -115,7 +124,7 @@ class FieldController extends Controller
         }
 
         session()->flash('success', 'Your field has been deleted.');
-        return redirect()->route('experiments.edit', $experiment->id);
+        return redirect()->route('experiments.fields.index', $experiment->id);
     }
 
     /**
@@ -125,6 +134,10 @@ class FieldController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function sort(Request $request, $experiment_id) {
+        if (! Gate::allows('update-experiment')) {
+            abort(403);
+        }
+
         $field_ids = $request->get('field_ids');
 
         $experiment = Experiment::findOrFail($experiment_id);

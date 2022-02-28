@@ -9,7 +9,21 @@
         <table class="table table-bordered table-striped">
             <thead>
                 <tr>
-                    <th colspan="2">Participant Details</th>
+                    <th colspan="2">
+                        Participant Details
+                        <div class="float-end">
+                            <a href="{{ route('participants.edit', $participant->id) }}" class="btn btn-info btn-sm">Edit</a>
+                            @if ($participant->responses->count() === 0)
+                            <form action="{{ route('participants.destroy', $participant->id) }}"
+                                method="POST">
+                                @csrf
+                                @method('delete')
+                                <button type="submit" class="btn btn-danger btn-sm"
+                                    onclick="return confirm('Are you sure you want to remove this participant?')">Delete</button>
+                            </form>
+                            @endif
+                        </div>
+                    </th>
                 </tr>
             </thead>
             <tbody>

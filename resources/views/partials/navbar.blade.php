@@ -12,7 +12,10 @@
                         {{ Auth::user()->name }}
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                        <li><a class="dropdown-item" href="{{ route('experiments.index') }}">Settings</a></li>
+                        <li><a class="dropdown-item" href="{{ route('users.edit', Auth::user()->id) }}">Settings</a></li>
+                        @if (Auth::user()->is_admin)
+                            <li><a class="dropdown-item" href="{{ route('users.index') }}">Manage Users</a></li>
+                        @endif
                         <li><hr class="dropdown-divider"></li>
                         <li>
                             <form action="{{ route('logout') }}" method="POST" id="logout-form">

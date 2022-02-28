@@ -17,7 +17,7 @@
 
                     <div class="row">
                         <div class="col d-grid mx-auto">
-                            <a href="{{ route('experiments.index') }}" class="btn btn-danger">Go back</a>
+                            <a href="{{ route('experiments.index') }}" class="btn btn-secondary">Go back</a>
                         </div>
                         <div class="col d-grid mx-auto">
                             <button type="submit" class="btn btn-primary">Submit</button>

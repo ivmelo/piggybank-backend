@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
+use App\Models\User;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -25,6 +26,20 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
 
-        //
+        Gate::define('update-experiment', function (User $user) {
+            return $user->is_admin;
+        });
+
+        Gate::define('add-participant', function (User $user) {
+            return $user->is_admin;
+        });
+
+        Gate::define('update-field', function (User $user) {
+            return $user->is_admin;
+        });
+
+        Gate::define('update-user', function (User $user, User $userToUpdate) {
+            return $user->is_admin || $user->id === $userToUpdate->id;
+        });
     }
 }

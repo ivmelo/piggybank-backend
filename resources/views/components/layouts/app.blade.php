@@ -12,10 +12,6 @@
             .container {
                 max-width: 1080p;
             }
-
-            /* .container-form {
-                max-width: 600px;
-            } */
         </style>
     </head>
     <body>
@@ -67,9 +63,7 @@
                         });
                     }
                 });
-            });
-
-            
+            });            
         </script>
     </body>
 </html>

@@ -29,10 +29,16 @@ Route::put('experiments/{experiment_id}', [ExperimentController::class, 'update'
 Route::get('experiments/{experiment_id}/participants/create', [ParticipantController::class, 'create'])->middleware(['auth'])->name('participants.create');
 Route::post('experiments/{experiment_id}/participants', [ParticipantController::class, 'store'])->middleware(['auth'])->name('participants.store');
 Route::get('participants/{participant_id}', [ParticipantController::class, 'show'])->middleware(['auth'])->name('participants.show');
+Route::get('participants/{participant_id}/edit', [ParticipantController::class, 'edit'])->middleware(['auth'])->name('participants.edit');
+Route::put('participants/{participant_id}', [ParticipantController::class, 'update'])->middleware(['auth'])->name('participants.update');
+Route::delete('participants/{participant_id}', [ParticipantController::class, 'destroy'])->middleware(['auth'])->name('participants.destroy');
 
 Route::get('users', [UserController::class, 'index'])->middleware(['auth'])->name('users.index');
 Route::get('users/create', [UserController::class, 'create'])->middleware(['auth'])->name('users.create');
 Route::post('users/store', [UserController::class, 'store'])->middleware(['auth'])->name('users.store');
+Route::get('users/{user_id}/edit', [UserController::class, 'edit'])->middleware(['auth'])->name('users.edit');
+Route::put('users/{user_id}', [UserController::class, 'update'])->middleware(['auth'])->name('users.update');
+Route::put('users/{user_id}/password', [UserController::class, 'updatePassword'])->middleware(['auth'])->name('users.update-password');
 
 Route::get('/', function () {
     return view('welcome');

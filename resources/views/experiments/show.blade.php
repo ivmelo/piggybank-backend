@@ -4,7 +4,9 @@
 
         <div>
             <h3 class="float-start mt-4 mb-4">Participants</h3>
+            @can('add-participant')
             <a href="{{ route('participants.create', $experiment->id) }}" class="btn btn-primary float-end mt-4 mb-4">Add Participant</a>
+            @endcan
         </div>
 
         <table class="table">

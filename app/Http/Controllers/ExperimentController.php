@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Experiment;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 class ExperimentController extends Controller
 {
@@ -26,7 +27,10 @@ class ExperimentController extends Controller
      */
     public function create()
     {
-        //
+        if (! Gate::allows('update-experiment')) {
+            abort(403);
+        }
+
         return view('experiments.create');
     }
 
@@ -38,17 +42,19 @@ class ExperimentController extends Controller
      */
     public function store(Request $request)
     {
+        if (! Gate::allows('update-experiment')) {
+            abort(403);
+        }
+
         $validated = $request->validate([
             'name' => 'required|min:2|max:255',
         ]);
 
         $experiment = new Experiment($validated);
-
         $experiment->save();
 
         session()->flash('success', 'Your experiment has been saved.');
-
-        return redirect()->route('experiments.edit', $experiment->id);
+        return redirect()->route('experiments.fields.index', $experiment->id);
     }
 
     /**
@@ -72,6 +78,10 @@ class ExperimentController extends Controller
      */
     public function edit(Experiment $experiment)
     {
+        if (! Gate::allows('update-experiment')) {
+            abort(403);
+        }
+
         return view('experiments.edit', [
             'experiment' => $experiment,
             'types' => [
@@ -91,16 +101,18 @@ class ExperimentController extends Controller
      */
     public function update(Request $request, Experiment $experiment)
     {
+        if (! Gate::allows('update-experiment')) {
+            abort(403);
+        }
+
         $validated = $request->validate([
             'name' => 'required|min:2|max:255',
         ]);
 
         $experiment->name = $validated['name'];
-
         $experiment->save();
 
         session()->flash('success', 'Your experiment has been saved.');
-
         return redirect()->route('experiments.edit', $experiment->id);
     }
 
@@ -112,7 +124,9 @@ class ExperimentController extends Controller
      */
     public function destroy(Experiment $experiment)
     {
-        //
+        if (! Gate::allows('update-experiment')) {
+            abort(403);
+        }
     }
 
     /**

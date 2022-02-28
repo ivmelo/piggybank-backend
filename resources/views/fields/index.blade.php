@@ -5,10 +5,12 @@
         <div>
             <h3 class="float-start mt-4 mb-4">Fields</h3>
     
+            @can('update-field')
             <button id="addFieldBtn" type="button" class="btn btn-primary float-end mb-4 mt-4" data-bs-toggle="modal"
                 data-bs-target="#addFieldModal">
                 Add Field
             </button>
+            @endcan
         </div>
     
         <table class="table table-striped">
@@ -20,9 +22,12 @@
                     <th scope="col">Updated By</th>
                     <th scope="col">Created At</th>
                     <th scope="col">Updated At</th>
+                    @can('update-field')
+                    <th scope="col">Actions</th>
+                    @endcan
                 </tr>
             </thead>
-            <tbody id="sortable">
+            <tbody @can('update-field') id="sortable" @endcan>
                 @foreach ($experiment->fields as $field)
                     <tr data-id="{{ $field->id }}">
                         {{-- <td>{{ $field->id }}</td> --}}
@@ -32,20 +37,23 @@
                         <td>{{ $field->editor->name }}</td>
                         <td>{{ $field->created_at->format(config('app.dtdisplayformat')) }}</td>
                         <td>{{ $field->updated_at->format(config('app.dtdisplayformat')) }}</td>
+                        @can('update-field')
                         <td>
                             <form action="{{ route('experiments.fields.destroy', [$experiment->id, $field->id]) }}"
                                 method="POST">
                                 @csrf
                                 @method('delete')
                                 <button type="submit" class="btn btn-danger btn-sm"
-                                    onclick="return confirm('Are you sure you want to remove this field?')">R</button>
+                                    onclick="return confirm('Are you sure you want to remove this field?')">Delete</button>
                             </form>
                         </td>
+                        @endcan
                     </tr>
                 @endforeach
             </tbody>
         </table>
     
+        @can('update-field')
         <form action="{{ route('experiments.fields.store', $experiment->id) }}" method="POST">
             <!-- Modal -->
             <div class="modal fade" id="addFieldModal" tabindex="-1" aria-labelledby="addFieldModalLabel"
@@ -94,6 +102,7 @@
                 </div>
             </div>
         </form>
+        @endcan
     </div>
     
     @if (count($errors) > 0)

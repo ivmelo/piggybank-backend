@@ -6,9 +6,23 @@ use App\Models\Experiment;
 use App\Models\Participant;
 use Illuminate\Http\Request;
 use App\Models\User;
+use Illuminate\Support\Facades\Gate;
 
 class ParticipantController extends Controller
 {
+    private $experimentVersions = [
+        'm1' => 'M1', 
+        'm2' => 'M2'
+    ];
+
+    private $validationRules = [
+        'code' => 'required|string|unique:participants|min:7|max:8',
+        'birthdate' => 'required|string|size:8',
+        'version' => 'required|in:m1,m2',
+        'host_id' => 'required|exists:users,id',
+        'notes' => 'nullable|min:2|max:2000'
+    ];
+
     /**
      * Display a listing of the resource.
      *
@@ -26,12 +40,16 @@ class ParticipantController extends Controller
      */
     public function create($experiment_id)
     {
+        if (! Gate::allows('update-experiment')) {
+            abort(403);
+        }
+
         $experiment = Experiment::findOrFail($experiment_id);
         $hosts = User::all()->pluck('name', 'id');
 
         return view('participants.create', [
             'experiment' => $experiment,
-            'versions' => ['m1' => 'M1', 'm2' => 'M2'],
+            'versions' => $this->experimentVersions,
             'hosts' => $hosts
         ]);
     }
@@ -44,14 +62,13 @@ class ParticipantController extends Controller
      */
     public function store(Request $request, $experiment_id)
     {
+        if (! Gate::allows('update-experiment')) {
+            abort(403);
+        }
+
         $experiment = Experiment::with('fields')->findOrFail($experiment_id);
 
-        $validated = $request->validate([
-            'code' => 'required|string|unique:participants|min:7|max:8',
-            'birthdate' => 'required|string|size:8',
-            'version' => 'required|in:m1,m2',
-            'host_id' => 'required|exists:users,id'
-        ]);
+        $validated = $request->validate($this->validationRules);
 
         $host = User::findOrFail($validated['host_id']);
         
@@ -87,9 +104,17 @@ class ParticipantController extends Controller
      * @param  \App\Models\Participant  $participant
      * @return \Illuminate\Http\Response
      */
-    public function edit(Participant $participant)
+    public function edit($participant_id)
     {
-        //
+        $participant = Participant::with('experiment')->findOrFail($participant_id);
+        $hosts = User::all()->pluck('name', 'id');
+
+        return view('participants.edit', [
+            'participant' => $participant,
+            'experiment' => $participant->experiment,
+            'versions' => $this->experimentVersions,
+            'hosts' => $hosts
+        ]);
     }
 
     /**
@@ -99,19 +124,40 @@ class ParticipantController extends Controller
      * @param  \App\Models\Participant  $participant
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Participant $participant)
+    public function update(Request $request, $participant_id)
     {
-        //
+        $participant = Participant::findOrFail($participant_id);
+
+        $this->validationRules['code'] = 'required|string|unique:participants,id,' . $participant->id . '|min:7|max:8';
+        $validated = $request->validate($this->validationRules);
+        $participant->fill($validated);
+
+        $host = User::findOrFail($validated['host_id']);
+        $participant->host()->associate($host);
+        $participant->save();
+
+        session()->flash('success', 'Your participant has been updated.');
+        return redirect()->route('participants.show', $participant->id);
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Remove the specified participant, but only if they haven't started the experiment.
      *
      * @param  \App\Models\Participant  $participant
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Participant $participant)
+    public function destroy($participant_id)
     {
-        //
+        $participant = Participant::with('experiment')->findOrFail($participant_id);
+        $experiment = $participant->experiment;
+        
+        if ($participant->responses->count() === 0) {
+            $participant->delete();
+            session()->flash('success', 'Your participant has been added.');
+            return redirect()->route('experiments.show', $experiment->id);
+        }
+
+        session()->flash('success', 'This participant cannot be deleted.');
+        return redirect()->back();
     }
 }

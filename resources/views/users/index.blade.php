@@ -1,9 +1,9 @@
 <x-layouts.app>
     <div class="container">
-
-        <h1>Users</h1>
-
-        <a href="{{ route('users.create') }}" class="btn btn-primary">Add User</a>
+        <div>
+            <h3 class="float-start mt-4 mb-4">Users</h3>
+            <a href="{{ route('users.create') }}" class="btn btn-primary float-end mt-4 mb-4">Add User</a>
+        </div>
 
         <table class="table">
             <thead>
@@ -19,7 +19,7 @@
             <tbody>
                 @foreach ($users as $user)
                     </th>
-                        <td>{{ $user->id }}</td>
+                        <td><a href="{{ route('users.edit', $user->id) }}">{{ $user->id }}</a></td>
                         <td>{{ $user->name }}</td>
                         <td>{{ $user->email }}</td>
                         <td>
@@ -33,12 +33,7 @@
                         <td>{{ $user->updated_at->format(config('app.dtdisplayformat')) }}</td>
                     <tr>
                 @endforeach
-
             </tbody>
         </table>
-
-        <div class="row">
-            
-        </div>
     </div>
 </x-layouts.app>
