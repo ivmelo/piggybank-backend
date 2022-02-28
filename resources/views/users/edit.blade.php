@@ -27,6 +27,7 @@
                         @enderror
                     </div>
 
+                    @can('update-user', new App\Models\User())
                     <div class="mb-3">
                         <label for="role" class="form-label">Role</label>
                         <select class="form-select @error('role') is-invalid @enderror" aria-label="role"
@@ -43,6 +44,7 @@
                             </div>
                         @enderror
                     </div>
+                    @endcan
 
                     <div class="row">
                         <div class="col d-grid mx-auto">
