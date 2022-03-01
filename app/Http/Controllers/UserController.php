@@ -134,7 +134,15 @@ class UserController extends Controller
         }
 
         $this->validationRules['email'] = 'required|string|email|max:255|unique:users,email,' . $user->id;
-        unset($this->validationRules['password']);
+        unset($this->validationRules['password']); // Password is updated separately.
+
+        // dd($user->is_admin);
+        if (! $user->is_admin) {
+            unset($this->validationRules['role']);
+        }
+
+        // dd($this->validationRules);
+
         $validated = $request->validate($this->validationRules);
 
         $user->fill($validated);
