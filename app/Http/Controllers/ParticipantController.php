@@ -12,14 +12,15 @@ use App\Models\Response;
 class ParticipantController extends Controller
 {
     private $experimentVersions = [
-        'm1' => 'M1', 
-        'm2' => 'M2'
+        'm1' => 'M1',
+        'm2' => 'M2',
+	    'taigan' => 'TAIGAN',
     ];
 
     private $validationRules = [
-        'code' => 'required|string|unique:participants|min:7|max:8',
+        'code' => 'required|string|unique:participants|min:6|max:8',
         'birthdate' => 'required|string|size:8',
-        'version' => 'required|in:m1,m2',
+        'version' => 'required|in:m1,m2,taigan',
         'host_id' => 'required|exists:users,id',
         'notes' => 'nullable|min:2|max:2000'
     ];
@@ -129,7 +130,7 @@ class ParticipantController extends Controller
     {
         $participant = Participant::findOrFail($participant_id);
 
-        $this->validationRules['code'] = 'required|string|unique:participants,id,' . $participant->id . '|min:7|max:8';
+        $this->validationRules['code'] = 'required|string|unique:participants,id,' . $participant->id . '|min:6|max:8';
         $validated = $request->validate($this->validationRules);
         $participant->fill($validated);
 
